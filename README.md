@@ -1,5 +1,5 @@
 ### Hi there 👋
 
-Take a look in my website: https://fivelrangel.github.io/FivelRangel/
+Please take a look at my website: https://fivelrangel.github.io/FivelRangel/
 
 
