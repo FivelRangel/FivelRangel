@@ -41,6 +41,14 @@
             border-radius: 8px;
             font-size: 16px;
         }
+        .form-group input.small-input {
+            width: calc(50% - 10px);
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .form-group input.small-input:last-child {
+            margin-right: 0;
+        }
         button {
             display: block;
             width: 100%;
@@ -64,12 +72,19 @@
         <h1>Cuestionario de Proyecto Social</h1>
         <form id="cuestionarioForm">
             <div class="form-group">
-                <label for="proyecto">Mi proyecto Social</label>
+                <label for="proyecto">Mi proyecto Social <span style="color: red;">*</span></label>
                 <input type="text" id="proyecto" name="proyecto" required>
             </div>
             <div class="form-group">
-                <label for="diagnostico">Diagnóstico (Público Objetivo)</label>
-                <input type="text" id="diagnostico" name="diagnostico" required>
+                <label>Diagnóstico (Público Objetivo)</label>
+                <label for="quien">Quién</label>
+                <input type="text" id="quien" name="quien" class="small-input" required>
+                <label for="donde">Dónde</label>
+                <input type="text" id="donde" name="donde" class="small-input" required>
+                <label for="cuantos">Cuántos</label>
+                <input type="text" id="cuantos" name="cuantos" class="small-input" required>
+                <label for="comoSon">Cómo son</label>
+                <input type="text" id="comoSon" name="comoSon" class="small-input" required>
             </div>
             <div class="form-group">
                 <label for="problematica">Problemática</label>
@@ -122,18 +137,25 @@
             const form = document.getElementById('cuestionarioForm');
             const respuestas = new FormData(form);
             const proyecto = respuestas.get('proyecto');
+            if (!proyecto) {
+                alert('El campo "Mi proyecto Social" es obligatorio.');
+                return;
+            }
             const preguntas = [
-                "Diagnóstico (Público Objetivo)",
-                "Problemática",
-                "Objetivo",
-                "Justificación",
-                "Estrategias",
-                "Metas",
-                "Acciones",
-                "Actividades",
-                "Cronograma",
-                "Costos",
-                "Retroalimentación"
+                { label: "Diagnóstico (Público Objetivo) - Quién", name: "quien" },
+                { label: "Diagnóstico (Público Objetivo) - Dónde", name: "donde" },
+                { label: "Diagnóstico (Público Objetivo) - Cuántos", name: "cuantos" },
+                { label: "Diagnóstico (Público Objetivo) - Cómo son", name: "comoSon" },
+                { label: "Problemática", name: "problematica" },
+                { label: "Objetivo", name: "objetivo" },
+                { label: "Justificación", name: "justificacion" },
+                { label: "Estrategias", name: "estrategias" },
+                { label: "Metas", name: "metas" },
+                { label: "Acciones", name: "acciones" },
+                { label: "Actividades", name: "actividades" },
+                { label: "Cronograma", name: "cronograma" },
+                { label: "Costos", name: "costos" },
+                { label: "Retroalimentación", name: "retroalimentacion" },
             ];
             let y = 30;
 
@@ -148,9 +170,9 @@
             // Preguntas y Respuestas
             preguntas.forEach((pregunta, index) => {
                 y += 10;
-                const respuesta = respuestas.get(pregunta.toLowerCase());
+                const respuesta = respuestas.get(pregunta.name);
                 doc.setFont("helvetica", "bold");
-                doc.text(`${pregunta}:`, 10, y);
+                doc.text(`${pregunta.label}:`, 10, y);
                 doc.setFont("helvetica", "normal");
                 doc.text(respuesta || '', 10, y + 8);
                 y += 10;
