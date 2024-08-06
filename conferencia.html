@@ -65,6 +65,14 @@
         button:hover {
             background-color: #005bb5;
         }
+        .cronograma-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .cronograma-item input {
+            width: 48%;
+        }
     </style>
 </head>
 <body>
@@ -116,7 +124,13 @@
             </div>
             <div class="form-group">
                 <label for="cronograma">Cronograma</label>
-                <input type="text" id="cronograma" name="cronograma" required>
+                <div id="cronograma">
+                    <div class="cronograma-item">
+                        <input type="text" name="actividad[]" placeholder="Actividad" required>
+                        <input type="date" name="fecha[]" required>
+                    </div>
+                </div>
+                <button type="button" onclick="agregarActividad()">Agregar Actividad</button>
             </div>
             <div class="form-group">
                 <label for="costos">Costos</label>
@@ -131,6 +145,16 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
+        function agregarActividad() {
+            const div = document.createElement('div');
+            div.className = 'cronograma-item';
+            div.innerHTML = `
+                <input type="text" name="actividad[]" placeholder="Actividad" required>
+                <input type="date" name="fecha[]" required>
+            `;
+            document.getElementById('cronograma').appendChild(div);
+        }
+
         function generarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -150,7 +174,6 @@
                 { label: "Metas", name: "metas" },
                 { label: "Acciones", name: "acciones" },
                 { label: "Actividades", name: "actividades" },
-                { label: "Cronograma", name: "cronograma" },
                 { label: "Costos", name: "costos" },
                 { label: "Retroalimentación", name: "retroalimentacion" },
             ];
@@ -189,6 +212,21 @@
                     doc.line(10, y + 2, 200, y + 2);
                 }
             });
+
+            // Cronograma
+            y += 10;
+            doc.setFont("helvetica", "bold");
+            doc.text("Cronograma:", 10, y);
+            const actividades = respuestas.getAll('actividad[]');
+            const fechas = respuestas.getAll('fecha[]');
+            actividades.forEach((actividad, index) => {
+                y += 10;
+                doc.setFont("helvetica", "normal");
+                doc.text(`Actividad: ${actividad}`, 10, y);
+                doc.text(`Fecha: ${fechas[index]}`, 100, y);
+            });
+            y += 2;
+            doc.line(10, y + 2, 200, y + 2);
 
             // Pie de página
             doc.setFontSize(10);
