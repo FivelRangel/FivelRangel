@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuestionario de Proyecto Social</title>
+    <title>Formulario de Proyecto Social</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -298,11 +298,10 @@
             doc.autoTable({
                 startY: y,
                 head: [['Cantidad', 'Descripción', 'Costo por pieza', 'Total']],
-                body: tableBody
+                body: tableBody,
+                foot: [['', '', 'Total', sumTotal.toFixed(2)]]
             });
             y = doc.lastAutoTable.finalY + 10;
-            doc.text(`Total: ${sumTotal.toFixed(2)}`, 10, y);
-            y += 10;
 
             // Pie de página
             if (y > maxY - 10) {
