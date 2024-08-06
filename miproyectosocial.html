@@ -286,9 +286,9 @@
             const total = respuestas.getAll('total[]');
             let sumTotal = 0;
             const tableBody = cantidad.map((_, i) => {
-                const totalItem = parseFloat(total[i]);
+                const totalItem = parseFloat(total[i]) || 0;
                 sumTotal += totalItem;
-                return [cantidad[i], descripcion[i], costoPieza[i], total[i]];
+                return [cantidad[i], descripcion[i], costoPieza[i], totalItem.toFixed(2)];
             });
 
             doc.autoTable({
