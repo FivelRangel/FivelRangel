@@ -67,44 +67,48 @@
                 <input type="text" id="proyecto" name="proyecto" required>
             </div>
             <div class="form-group">
-                <label for="pregunta1">Pregunta 1</label>
-                <input type="text" id="pregunta1" name="pregunta1" required>
+                <label for="diagnostico">Diagnóstico</label>
+                <input type="text" id="diagnostico" name="diagnostico" required>
             </div>
             <div class="form-group">
-                <label for="pregunta2">Pregunta 2</label>
-                <input type="text" id="pregunta2" name="pregunta2" required>
+                <label for="problematica">Problemática</label>
+                <input type="text" id="problematica" name="problematica" required>
             </div>
             <div class="form-group">
-                <label for="pregunta3">Pregunta 3</label>
-                <input type="text" id="pregunta3" name="pregunta3" required>
+                <label for="objetivo">Objetivo</label>
+                <input type="text" id="objetivo" name="objetivo" required>
             </div>
             <div class="form-group">
-                <label for="pregunta4">Pregunta 4</label>
-                <input type="text" id="pregunta4" name="pregunta4" required>
+                <label for="justificacion">Justificación</label>
+                <input type="text" id="justificacion" name="justificacion" required>
             </div>
             <div class="form-group">
-                <label for="pregunta5">Pregunta 5</label>
-                <input type="text" id="pregunta5" name="pregunta5" required>
+                <label for="estrategias">Estrategias</label>
+                <input type="text" id="estrategias" name="estrategias" required>
             </div>
             <div class="form-group">
-                <label for="pregunta6">Pregunta 6</label>
-                <input type="text" id="pregunta6" name="pregunta6" required>
+                <label for="metas">Metas</label>
+                <input type="text" id="metas" name="metas" required>
             </div>
             <div class="form-group">
-                <label for="pregunta7">Pregunta 7</label>
-                <input type="text" id="pregunta7" name="pregunta7" required>
+                <label for="acciones">Acciones</label>
+                <input type="text" id="acciones" name="acciones" required>
             </div>
             <div class="form-group">
-                <label for="pregunta8">Pregunta 8</label>
-                <input type="text" id="pregunta8" name="pregunta8" required>
+                <label for="actividades">Actividades</label>
+                <input type="text" id="actividades" name="actividades" required>
             </div>
             <div class="form-group">
-                <label for="pregunta9">Pregunta 9</label>
-                <input type="text" id="pregunta9" name="pregunta9" required>
+                <label for="cronograma">Cronograma</label>
+                <input type="text" id="cronograma" name="cronograma" required>
             </div>
             <div class="form-group">
-                <label for="pregunta10">Pregunta 10</label>
-                <input type="text" id="pregunta10" name="pregunta10" required>
+                <label for="costos">Costos</label>
+                <input type="text" id="costos" name="costos" required>
+            </div>
+            <div class="form-group">
+                <label for="retroalimentacion">Retroalimentación</label>
+                <input type="text" id="retroalimentacion" name="retroalimentacion" required>
             </div>
             <button type="button" onclick="generarPDF()">Generar PDF</button>
         </form>
@@ -117,26 +121,39 @@
             const form = document.getElementById('cuestionarioForm');
             const respuestas = new FormData(form);
             const proyecto = respuestas.get('proyecto');
-            let y = 20;
+            const preguntas = [
+                "Diagnóstico",
+                "Problemática",
+                "Objetivo",
+                "Justificación",
+                "Estrategias",
+                "Metas",
+                "Acciones",
+                "Actividades",
+                "Cronograma",
+                "Costos",
+                "Retroalimentación"
+            ];
+            let y = 30;
 
             // Encabezado del proyecto
             doc.setFontSize(20);
             doc.setFont("helvetica", "bold");
-            doc.text(proyecto, 10, 10);
+            doc.text(proyecto, 10, 20);
             doc.setFontSize(12);
             doc.setFont("helvetica", "normal");
-            doc.line(10, 15, 200, 15);
+            doc.line(10, 25, 200, 25);
 
-            respuestas.forEach((value, key) => {
-                if (key !== 'proyecto') {
-                    y += 10;
-                    doc.setFont("helvetica", "bold");
-                    doc.text(`${key.replace("pregunta", "Pregunta ")}:`, 10, y);
-                    doc.setFont("helvetica", "normal");
-                    doc.text(value, 10, y + 8);
-                    y += 10;
-                    doc.line(10, y + 2, 200, y + 2);
-                }
+            // Preguntas y Respuestas
+            preguntas.forEach((pregunta, index) => {
+                y += 10;
+                const respuesta = respuestas.get(pregunta.toLowerCase());
+                doc.setFont("helvetica", "bold");
+                doc.text(`${pregunta}:`, 10, y);
+                doc.setFont("helvetica", "normal");
+                doc.text(respuesta || '', 10, y + 8);
+                y += 10;
+                doc.line(10, y + 2, 200, y + 2);
             });
 
             // Pie de página
