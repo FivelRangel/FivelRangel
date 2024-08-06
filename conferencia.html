@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Proyecto Social</title>
+    <title>Cuestionario de Proyecto Social</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -77,7 +77,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Mi de Proyecto Social</h1>
+        <h1>Cuestionario de Proyecto Social</h1>
         <form id="cuestionarioForm">
             <div class="form-group">
                 <label for="proyecto">Mi proyecto Social <span style="color: red;">*</span></label>
@@ -165,6 +165,7 @@
                 alert('El campo "Mi proyecto Social" es obligatorio.');
                 return;
             }
+
             const preguntas = [
                 { label: "Diagnóstico (Público Objetivo)", fields: ["quien", "donde", "cuantos", "comoSon"] },
                 { label: "Problemática", name: "problematica" },
@@ -177,58 +178,75 @@
                 { label: "Costos", name: "costos" },
                 { label: "Retroalimentación", name: "retroalimentacion" },
             ];
+
             let y = 30;
+            const maxY = 280; // To leave some margin at the bottom
 
             // Encabezado del proyecto
             doc.setFontSize(20);
             doc.setFont("helvetica", "bold");
-            doc.text(proyecto, 10, 20);
+            doc.text(proyecto, 10, y);
+            y += 10;
             doc.setFontSize(12);
             doc.setFont("helvetica", "normal");
-            doc.line(10, 25, 200, 25);
+            doc.line(10, y, 200, y);
+            y += 10;
 
             // Preguntas y Respuestas
             preguntas.forEach((pregunta, index) => {
                 if (pregunta.fields) {
-                    y += 10;
                     doc.setFont("helvetica", "bold");
                     doc.text(`${pregunta.label}:`, 10, y);
+                    y += 10;
                     pregunta.fields.forEach((field) => {
-                        y += 10;
                         const respuesta = respuestas.get(field);
                         doc.setFont("helvetica", "normal");
                         doc.text(`${field.charAt(0).toUpperCase() + field.slice(1)}: ${respuesta || ''}`, 10, y);
+                        y += 10;
+                        if (y > maxY) {
+                            doc.addPage();
+                            y = 10;
+                        }
                     });
-                    y += 2;
-                    doc.line(10, y + 2, 200, y + 2);
                 } else {
-                    y += 10;
-                    const respuesta = respuestas.get(pregunta.name);
                     doc.setFont("helvetica", "bold");
                     doc.text(`${pregunta.label}:`, 10, y);
-                    doc.setFont("helvetica", "normal");
-                    doc.text(respuesta || '', 10, y + 8);
                     y += 10;
-                    doc.line(10, y + 2, 200, y + 2);
+                    const respuesta = respuestas.get(pregunta.name);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(respuesta || '', 10, y);
+                    y += 10;
+                    doc.line(10, y, 200, y);
+                    y += 10;
+                    if (y > maxY) {
+                        doc.addPage();
+                        y = 10;
+                    }
                 }
             });
 
             // Cronograma
-            y += 10;
             doc.setFont("helvetica", "bold");
             doc.text("Cronograma:", 10, y);
+            y += 10;
             const actividades = respuestas.getAll('actividad[]');
             const fechas = respuestas.getAll('fecha[]');
             actividades.forEach((actividad, index) => {
-                y += 10;
                 doc.setFont("helvetica", "normal");
                 doc.text(`Actividad: ${actividad}`, 10, y);
                 doc.text(`Fecha: ${fechas[index]}`, 100, y);
+                y += 10;
+                if (y > maxY) {
+                    doc.addPage();
+                    y = 10;
+                }
             });
-            y += 2;
-            doc.line(10, y + 2, 200, y + 2);
 
             // Pie de página
+            if (y > maxY - 10) {
+                doc.addPage();
+                y = 10;
+            }
             doc.setFontSize(10);
             doc.setFont("helvetica", "italic");
             doc.text("Generado con jsPDF", 10, 290);
