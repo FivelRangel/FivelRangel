@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,6 +56,10 @@
         <h1>Cuestionario</h1>
         <form id="cuestionarioForm">
             <div class="form-group">
+                <label for="proyecto">Mi proyecto Social</label>
+                <input type="text" id="proyecto" name="proyecto">
+            </div>
+            <div class="form-group">
                 <label for="pregunta1">Pregunta 1</label>
                 <input type="text" id="pregunta1" name="pregunta1">
             </div>
@@ -105,12 +109,33 @@
             const doc = new jsPDF();
             const form = document.getElementById('cuestionarioForm');
             const respuestas = new FormData(form);
-            let y = 10;
+            const proyecto = respuestas.get('proyecto');
+            let y = 20;
+
+            // Encabezado del proyecto
+            doc.setFontSize(20);
+            doc.setFont("helvetica", "bold");
+            doc.text(proyecto, 10, 10);
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.line(10, 15, 200, 15);
 
             respuestas.forEach((value, key) => {
-                doc.text(`${key}: ${value}`, 10, y);
-                y += 10;
+                if (key !== 'proyecto') {
+                    y += 10;
+                    doc.text(`${key}:`, 10, y);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(value, 50, y);
+                    doc.setFont("helvetica", "normal");
+                    y += 5;
+                    doc.line(10, y, 200, y);
+                }
             });
+
+            // Pie de página
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "italic");
+            doc.text("Generado con jsPDF", 10, 290);
 
             doc.save('cuestionario.pdf');
         }
