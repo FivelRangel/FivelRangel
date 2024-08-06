@@ -192,4 +192,11 @@
 
             // Pie de página
             doc.setFontSize(10);
-           
+            doc.setFont("helvetica", "italic");
+            doc.text("Generado con jsPDF", 10, 290);
+
+            doc.save('cuestionario.pdf');
+        }
+    </script>
+</body>
+</html>
