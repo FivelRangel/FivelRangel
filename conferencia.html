@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Proyecto Social</title>
+    <title>Cuestionario de Proyecto Social</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -96,8 +96,8 @@
                 <input type="text" id="donde" name="donde" class="small-input" required>
                 <label for="cuantos">Cuántos</label>
                 <input type="text" id="cuantos" name="cuantos" class="small-input" required>
-                <label for="comoSon">Cómo son</label>
-                <input type="text" id="comoSon" name="comoSon" class="small-input" required>
+                <label for="caracteristicas">Características</label>
+                <input type="text" id="caracteristicas" name="caracteristicas" class="small-input" required>
             </div>
             <div class="form-group">
                 <label for="problematica">Problemática</label>
@@ -149,10 +149,6 @@
                 </div>
                 <button type="button" onclick="agregarCosto()">Agregar Costo</button>
             </div>
-            <div class="form-group">
-                <label for="retroalimentacion">Retroalimentación</label>
-                <input type="text" id="retroalimentacion" name="retroalimentacion" required>
-            </div>
             <button type="button" onclick="generarPDF()">Generar PDF</button>
         </form>
     </div>
@@ -184,8 +180,8 @@
         document.getElementById('cuestionarioForm').addEventListener('input', function(e) {
             if (e.target.name === 'cantidad[]' || e.target.name === 'costoPieza[]') {
                 const costosItem = e.target.closest('.costos-item');
-                const cantidad = costosItem.querySelector('input[name="cantidad[]"]').value;
-                const costoPieza = costosItem.querySelector('input[name="costoPieza[]"]').value;
+                const cantidad = parseFloat(costosItem.querySelector('input[name="cantidad[]"]').value) || 0;
+                const costoPieza = parseFloat(costosItem.querySelector('input[name="costoPieza[]"]').value) || 0;
                 const total = costosItem.querySelector('input[name="total[]"]');
                 total.value = cantidad * costoPieza;
             }
@@ -203,7 +199,7 @@
             }
 
             const preguntas = [
-                { label: "Diagnóstico (Público Objetivo)", fields: ["quien", "donde", "cuantos", "comoSon"] },
+                { label: "Diagnóstico (Público Objetivo)", fields: ["quien", "donde", "cuantos", "caracteristicas"] },
                 { label: "Problemática", name: "problematica" },
                 { label: "Objetivo", name: "objetivo" },
                 { label: "Justificación", name: "justificacion" },
@@ -211,7 +207,6 @@
                 { label: "Metas", name: "metas" },
                 { label: "Acciones", name: "acciones" },
                 { label: "Actividades", name: "actividades" },
-                { label: "Retroalimentación", name: "retroalimentacion" },
             ];
 
             let y = 30;
@@ -291,7 +286,8 @@
             const total = respuestas.getAll('total[]');
             let sumTotal = 0;
             const tableBody = cantidad.map((_, i) => {
-                sumTotal += parseFloat(total[i]);
+                const totalItem = parseFloat(total[i]);
+                sumTotal += totalItem;
                 return [cantidad[i], descripcion[i], costoPieza[i], total[i]];
             });
 
