@@ -175,7 +175,6 @@
                 { label: "Metas", name: "metas" },
                 { label: "Acciones", name: "acciones" },
                 { label: "Actividades", name: "actividades" },
-                { label: "Costos", name: "costos" },
                 { label: "Retroalimentación", name: "retroalimentacion" },
             ];
 
@@ -225,21 +224,6 @@
                 }
             });
 
-            // Costos
-            doc.setFont("helvetica", "bold");
-            doc.text("Costos:", 10, y);
-            y += 10;
-            const costos = respuestas.get('costos');
-            doc.setFont("helvetica", "normal");
-            doc.text(costos || '', 10, y);
-            y += 10;
-            doc.line(10, y, 200, y);
-            y += 10;
-            if (y > maxY) {
-                doc.addPage();
-                y = 10;
-            }
-
             // Cronograma
             doc.setFont("helvetica", "bold");
             doc.text("Cronograma:", 10, y);
@@ -256,6 +240,25 @@
                     y = 10;
                 }
             });
+
+            // Costos
+            if (y > maxY - 20) {
+                doc.addPage();
+                y = 10;
+            }
+            doc.setFont("helvetica", "bold");
+            doc.text("Costos:", 10, y);
+            y += 10;
+            const costos = respuestas.get('costos');
+            doc.setFont("helvetica", "normal");
+            doc.text(costos || '', 10, y);
+            y += 10;
+            doc.line(10, y, 200, y);
+            y += 10;
+            if (y > maxY) {
+                doc.addPage();
+                y = 10;
+            }
 
             // Pie de página
             if (y > maxY - 10) {
