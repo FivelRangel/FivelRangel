@@ -65,13 +65,18 @@
         button:hover {
             background-color: #005bb5;
         }
-        .cronograma-item {
+        .cronograma-item,
+        .costos-item {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-        .cronograma-item input {
+        .cronograma-item input,
+        .costos-item input {
             width: 48%;
+        }
+        .costos-item input.small-input {
+            width: 23%;
         }
     </style>
 </head>
@@ -134,7 +139,15 @@
             </div>
             <div class="form-group">
                 <label for="costos">Costos</label>
-                <input type="text" id="costos" name="costos" required>
+                <div id="costos">
+                    <div class="costos-item">
+                        <input type="number" name="cantidad[]" placeholder="Cantidad" class="small-input" required>
+                        <input type="text" name="descripcion[]" placeholder="Descripción" class="small-input" required>
+                        <input type="number" name="costoPieza[]" placeholder="Costo por pieza" class="small-input" required>
+                        <input type="number" name="total[]" placeholder="Total" class="small-input" required readonly>
+                    </div>
+                </div>
+                <button type="button" onclick="agregarCosto()">Agregar Costo</button>
             </div>
             <div class="form-group">
                 <label for="retroalimentacion">Retroalimentación</label>
@@ -154,6 +167,28 @@
             `;
             document.getElementById('cronograma').appendChild(div);
         }
+
+        function agregarCosto() {
+            const div = document.createElement('div');
+            div.className = 'costos-item';
+            div.innerHTML = `
+                <input type="number" name="cantidad[]" placeholder="Cantidad" class="small-input" required>
+                <input type="text" name="descripcion[]" placeholder="Descripción" class="small-input" required>
+                <input type="number" name="costoPieza[]" placeholder="Costo por pieza" class="small-input" required>
+                <input type="number" name="total[]" placeholder="Total" class="small-input" required readonly>
+            `;
+            document.getElementById('costos').appendChild(div);
+        }
+
+        document.getElementById('cuestionarioForm').addEventListener('input', function(e) {
+            if (e.target.name === 'cantidad[]' || e.target.name === 'costoPieza[]') {
+                const costosItem = e.target.closest('.costos-item');
+                const cantidad = costosItem.querySelector('input[name="cantidad[]"]').value;
+                const costoPieza = costosItem.querySelector('input[name="costoPieza[]"]').value;
+                const total = costosItem.querySelector('input[name="total[]"]');
+                total.value = cantidad * costoPieza;
+            }
+        });
 
         function generarPDF() {
             const { jsPDF } = window.jspdf;
@@ -242,23 +277,29 @@
             });
 
             // Costos
-            if (y > maxY - 20) {
+            if (y > maxY - 40) {
                 doc.addPage();
                 y = 10;
             }
             doc.setFont("helvetica", "bold");
             doc.text("Costos:", 10, y);
             y += 10;
-            const costos = respuestas.get('costos');
-            doc.setFont("helvetica", "normal");
-            doc.text(costos || '', 10, y);
+            const cantidad = respuestas.getAll('cantidad[]');
+            const descripcion = respuestas.getAll('descripcion[]');
+            const costoPieza = respuestas.getAll('costoPieza[]');
+            const total = respuestas.getAll('total[]');
+            let sumTotal = 0;
+            doc.autoTable({
+                startY: y,
+                head: [['Cantidad', 'Descripción', 'Costo por pieza', 'Total']],
+                body: cantidad.map((_, i) => {
+                    sumTotal += parseFloat(total[i]);
+                    return [cantidad[i], descripcion[i], costoPieza[i], total[i]];
+                })
+            });
+            y = doc.lastAutoTable.finalY + 10;
+            doc.text(`Total: ${sumTotal.toFixed(2)}`, 10, y);
             y += 10;
-            doc.line(10, y, 200, y);
-            y += 10;
-            if (y > maxY) {
-                doc.addPage();
-                y = 10;
-            }
 
             // Pie de página
             if (y > maxY - 10) {
