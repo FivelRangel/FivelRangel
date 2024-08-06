@@ -142,10 +142,7 @@
                 return;
             }
             const preguntas = [
-                { label: "Diagnóstico (Público Objetivo) - Quién", name: "quien" },
-                { label: "Diagnóstico (Público Objetivo) - Dónde", name: "donde" },
-                { label: "Diagnóstico (Público Objetivo) - Cuántos", name: "cuantos" },
-                { label: "Diagnóstico (Público Objetivo) - Cómo son", name: "comoSon" },
+                { label: "Diagnóstico (Público Objetivo)", fields: ["quien", "donde", "cuantos", "comoSon"] },
                 { label: "Problemática", name: "problematica" },
                 { label: "Objetivo", name: "objetivo" },
                 { label: "Justificación", name: "justificacion" },
@@ -169,23 +166,30 @@
 
             // Preguntas y Respuestas
             preguntas.forEach((pregunta, index) => {
-                y += 10;
-                const respuesta = respuestas.get(pregunta.name);
-                doc.setFont("helvetica", "bold");
-                doc.text(`${pregunta.label}:`, 10, y);
-                doc.setFont("helvetica", "normal");
-                doc.text(respuesta || '', 10, y + 8);
-                y += 10;
-                doc.line(10, y + 2, 200, y + 2);
+                if (pregunta.fields) {
+                    y += 10;
+                    doc.setFont("helvetica", "bold");
+                    doc.text(`${pregunta.label}:`, 10, y);
+                    pregunta.fields.forEach((field) => {
+                        y += 10;
+                        const respuesta = respuestas.get(field);
+                        doc.setFont("helvetica", "normal");
+                        doc.text(`${field.charAt(0).toUpperCase() + field.slice(1)}: ${respuesta || ''}`, 10, y);
+                    });
+                    y += 2;
+                    doc.line(10, y + 2, 200, y + 2);
+                } else {
+                    y += 10;
+                    const respuesta = respuestas.get(pregunta.name);
+                    doc.setFont("helvetica", "bold");
+                    doc.text(`${pregunta.label}:`, 10, y);
+                    doc.setFont("helvetica", "normal");
+                    doc.text(respuesta || '', 10, y + 8);
+                    y += 10;
+                    doc.line(10, y + 2, 200, y + 2);
+                }
             });
 
             // Pie de página
             doc.setFontSize(10);
-            doc.setFont("helvetica", "italic");
-            doc.text("Generado con jsPDF", 10, 290);
-
-            doc.save('cuestionario.pdf');
-        }
-    </script>
-</body>
-</html>
+           
