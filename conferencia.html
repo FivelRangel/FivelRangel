@@ -225,6 +225,21 @@
                 }
             });
 
+            // Costos
+            doc.setFont("helvetica", "bold");
+            doc.text("Costos:", 10, y);
+            y += 10;
+            const costos = respuestas.get('costos');
+            doc.setFont("helvetica", "normal");
+            doc.text(costos || '', 10, y);
+            y += 10;
+            doc.line(10, y, 200, y);
+            y += 10;
+            if (y > maxY) {
+                doc.addPage();
+                y = 10;
+            }
+
             // Cronograma
             doc.setFont("helvetica", "bold");
             doc.text("Cronograma:", 10, y);
